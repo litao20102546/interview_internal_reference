@@ -1,0 +1,13 @@
+#### **题目**：主从复制
+1. 复制的基本原理
+	- master-> binary log(二进制事件)
+	- slave copy binary log from master to relay log
+	- slave redo binary log
+2. 基本原则
+    - slave(多个) - master(一个）
+    - slave only have one server ID
+3. 配置
+	- server id
+	- bin log
+	- master 授权 -> show master status -> slave 配置master, start slaver-> show slaver status
+	

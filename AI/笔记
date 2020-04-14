@@ -1,0 +1,12 @@
+期望值为1或者-1适合用向量机
+交叉熵
+softmax
+	样本分量之和为1
+	categorial_crossentropy
+	sparse_categorical_crossentropy
+	fashion mnist
+
+plt.imshow()
+
+
+model.evaluate
