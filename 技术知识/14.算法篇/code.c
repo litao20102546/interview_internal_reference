@@ -36,6 +36,7 @@ unordered_map
     empty        判断是否为空
     insert        插入元素
     find        通过给定主键查找元素
+    count       
 unordered_set
     t.insert();
     t.erase();
@@ -53,6 +54,8 @@ string
     可以用伪函数less()和greater()来生成大顶堆和小顶堆
     push_heap()是在堆的基础上进行数据的插入操作，参数与make_heap()相同，需要注意的是，只有make_heap（）和push_heap（）同为大顶堆或小顶堆，才能插入。
     pop_heap()是在堆的基础上，弹出堆顶元素。这里需要注意的是，pop_heap()并没有删除元素，而是将堆顶元素和数组最后一个元素进行了替换，如果要删除这个元素，还需要对数组进行pop_back()操作。 
+
+快速取余:int pos = (n - 1) & hash，也就是hash%n
 //1 在有序矩阵中寻找一个值是否存在
     //(原一维数组中下标为i的元素将出现在二维数组中的[i/n][i%n]的位置)
     #include <stdlib.h>
