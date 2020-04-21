@@ -1,6 +1,6 @@
 1. Kafka、ActiveMQ、RabbitMQ、RocketMQ 有什么优缺点？
-指标 | ActiveMQ | RabbitMQ | RocketMQ | Kafka | ZeroMQ
-:-: | :-: | :-: | :-: | :-: | :-:
+|指标 | ActiveMQ | RabbitMQ | RocketMQ | Kafka | ZeroMQ|
+|:------------ |:------------ |:------------ |:------------|:------------ |:------------ 
 单机吞吐量 | 比RabbitMQ低 | 2.6w/s | （消息做持久化）| 11.6w/s | 17.3w/s | 29w/s
 开发语言 | Java | Erlang | Java | Scala/Java | C
 成熟度 | 成熟 | 成熟 | 开源版本不够成熟 | 比较成熟 | 只有C、PHP等版本成熟
