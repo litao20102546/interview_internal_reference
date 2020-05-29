@@ -1,3 +1,16 @@
+https://blog.csdn.net/qq_29373285/article/details/88610654
+B树 二叉搜索树
+B-树， 是一种多路搜索树，每个节点存放关键字
+B+树的分裂：当一个结点满时，分配一个新的结点，并将原结点中1/2的数据
+复制到新结点, 最后在父结点中增加新结点的指针
+B* 是B+树的变体，在B+树的非根和非叶子结点再增加指向兄弟的指针
+B*树的分裂：当一个结点满时，如果它的下一个兄弟结点未满，那么将一部分
+数据移到兄弟结点中，再在原结点插入关键字，最后修改父结点中兄弟结点的关键字
+红黑树
+1. 根节点是黑色的。
+2. 空节点是黑色的（红黑树中，根节点的parent以及所有叶节点lchild、rchild都不指向NULL，而是指向一个定义好的空节点）。
+3. 红色节点的父、左子、右子节点都是黑色。
+4. 在任何一棵子树中，每一条从根节点向下走到空节点的路径上包含的黑色节点数量都相同。
 
 vector (向量)
     vector<int> vec;
@@ -11,8 +24,10 @@ stack
 
 queue  
     queue<int> q1
-    front(), back(), empty(), size(), pop(), push()
-
+    front(), back(), empty(), size(), pop(), push(), 
+deque  
+    queue<int> q1
+  pop_front(), pop_back(), push_back(), push_front()
 list （Lists将元素按顺序储存在链表中. 与 向量(vectors)相比, 它允许快速的插入和删除，但是随机访问却比较慢）
     front() 返回第一个元素                 back() 返回最后一个元素 
     begin() 返回指向第一个元素的迭代器          end() 返回末尾的迭代器
@@ -56,7 +71,7 @@ string
     pop_heap()是在堆的基础上，弹出堆顶元素。这里需要注意的是，pop_heap()并没有删除元素，而是将堆顶元素和数组最后一个元素进行了替换，如果要删除这个元素，还需要对数组进行pop_back()操作。 
 
 快速取余:int pos = (n - 1) & hash，也就是hash%n
-//1 在有序矩阵中寻找一个值是否存在
+//1 （1）在有序矩阵中寻找一个值是否存在
     //(原一维数组中下标为i的元素将出现在二维数组中的[i/n][i%n]的位置)
     #include <stdlib.h>
     #include <stdio.h>
@@ -91,7 +106,7 @@ string
         return 0;
     }
 
-//2 替换字符串空格为%20
+//2 (1)替换字符串空格为%20
 
     #include <stdlib.h>
     #include <stdio.h>
@@ -217,8 +232,7 @@ string
 
 //5 从后打印链表节点值
     //C++栈应用：std::stack<ListNode*> nodes;
-    void PrintNodeValue(ListNode* pHead)
-    {
+    void PrintNodeValue(ListNode* pHead){
         if(pHead == NULL)
         {
             return;
@@ -313,28 +327,43 @@ string
 
 //7 排序 （稳定性是看两个相等的数，一次排序后相对位置是否变化）
     //https://blog.csdn.net/u010305706/article/details/51207444
+    //https://www.cnblogs.com/fivestudy/p/10212306.html
     //九大排序 :1）插入排序：
     //             直接插入排序（从后往前，稳定，最好n,最差n的平方，平均时间复杂度n的平方），
     //             希尔排序，（逐渐分组排序，最后增量为1，不稳定，平均时间复杂度nlogn）
     //             二分法插入排序 (从后往前，稳定，与正反序无关，移动和直接插入相同，查询位置平均少，平均时间复杂度n的平方)
     //        2）交换排序：
     //             冒泡排序 （大数往下沉，小数往上冒，稳定，正序复杂度n，反序n的平方，平均时间复杂度n的平方）
-    //             快速排序 【递归调用导致nlogn空间复杂度】（基数，小于基数放左边，大于基数放右边，不稳定，时间复杂度为nlogn,数比较大的时候用比较合适，基本正序的时候反而不好用）
+    //             快速排序 【递归调用导致logn空间复杂度】（基数，小于基数放左边，大于基数放右边，不稳定，时间复杂度为nlogn,数比较大的时候用比较合适，基本正序的时候反而不好用）
     //        3) 选择排序：
     //             简单选择排序 (选择最小的放到最前面，不稳定，时间复杂度n的平方)
+                        //不稳定理解5 8 5 2 9, 2会和第一个5交换
     //             堆排序 （建立堆，不断剔除最大数，不稳定，最坏nlogn,建立堆需要多判断，不宜记录数小的文件）
     //        4) 归并排序：【空间复杂度n】（分组，子序列先排序再合并，稳定，时间复杂度nlogn，常用于总体无序，子项相对有序, 实现merge时需要用到辅助数组）
     //        5) 基数排序：（从最低位，按照位排序，稳定，稳定性d(n+r)，d位数，r基数）
-    //
+    //        6）计数排序
+    //        7) 桶排序
+    // void ShellSort(int a[],int n) {
+    // //分组：以数组长度/2为起始分组点
+    // //循环结束执行delta/2：再一次分组
+    //   for(int delta=n/2;delta>0;delta/=2) {
+    //     //组内排序：排序方式为插入方式
+    //     //i++:就到了下一组
+    //     for(int i=delta;i<n;i++) {
+    //       int temp=a[i];
+    //       int j=i-delta;
+    //       while(j>=0 && temp<a[j]) {
+    //           a[j+delta]=a[j];//将在a[i]前且比temp的值大的元素向后移动一位
+    //       }
+    //       a[j+delta]=temp;
+    //     }
+    //   }
+    // }
+
     //堆排序：https://www.cnblogs.com/chengxiao/p/6129630.html
     //其中构建初始堆经推导复杂度为O(n)，在交换并重建堆的过程中，需交换n-1次，而重建堆的过程中，根据完全二叉树的性质，
     //[log2(n-1),log2(n-2)...1]逐步递减，近似为nlogn。所以堆排序时间复杂度一般认为就是O(nlogn)级。
     //建堆从最后一个非叶子结点开始length/2-1
-    //
-    //
-    //
-    //
-    //
     //
     //    
     //#define left(x) 2*x+1;//获得左节点在数组中的下标
@@ -343,15 +372,12 @@ string
     // {
     //     int l = left(i);//计算下标为i的节点的左子节点
     //     int r = right(i);//计算下标为i的节点的右子节点
-    //     int largest;//保存i,l,r(即i和它的左右子节点)之间的最大数的下标
+    //     int largest=i;//保存i,l,r(即i和它的左右子节点)之间的最大数的下标
     //     int temp;//交互数组中的数所使用的临时变量
     //     //找到三个数当中最大的那个数，将最大的那个数和i进行互换
     //     if (l<=high && a[l]>a[i])
     //     {
     //         largest = l;
-    //     }
-    //     else{
-    //         largest = i;
     //     }
 
     //     if (r<=high && a[r]>a[largest])
@@ -389,7 +415,7 @@ string
     // }
 
     //归并排序
-    void merge_sort(int *data, int left, int right)
+    void merge_sort(int *a, int left, int right)
     {
         if(left<right){
              int middle = (left+right)/2;
@@ -401,9 +427,9 @@ string
              merge(a,left,middle,right);
     }
 
-    void merge(int *data,int start,int end)
+    void merge(int *a, int middle, int left,int right)
     {
-        int tmpArr[a.length];
+        int tmparr[a.length];
         int mid = middle+1; //右边的起始位置
          int tmp = left;
          int third = left;
@@ -428,6 +454,7 @@ string
          }
     }
 //8 快排 (选一个基数，通常选第一个或者最后一个，利用前后双指针将小于基数的数放到左边，大于基数的数放到右边，再把基数放到对应的位置，利用迭代完成，递归次数log2n，第一次partition 为n)
+    //最差情况一边倒  (n-1)+(n-2)+…+2+1= O(n^2) 时间。
     #include<stdio.h>
     #include<string.h>
     int partition(int data[], int low, int high)
@@ -450,7 +477,6 @@ string
         }
         data[low] = temp;
         return low;
-
     }
 
     void QuickSort(int data[], int start, int end)
@@ -583,12 +609,12 @@ string
       return secondNode;
   }
 
-//12 链表的反转
+//12 (1)链表的反转
   ListNode* reverseList(ListNode* pHead)
   {
       ListNode* reverseHead = NULL;
       ListNode* pNode = pHead;
-      ListNode* preNode = NULL;
+      ListNode* tailNode = NULL;
       while(pNode != NULL)
       {
           ListNode* pNext = pNode->next;
@@ -596,8 +622,8 @@ string
           {
               reverseHead = pNode;
           }
-          pNode->next = preNode;
-          preNode = pNode;
+          pNode->next = tailNode;
+          tailNode = pNode;
           pNode = pNext;
       }
       return reverseHead;
@@ -669,27 +695,23 @@ string
         }
     }
 
-//15 二叉搜索树后序遍历，给定序列，判断是否为二叉搜索树后序遍历
-    bool IsSquenceofBST(int data[], int length)
-    {
+//(1)15 二叉搜索树后序遍历，给定序列，判断是否为二叉搜索树后序遍历
+    bool IsSquenceofBST(int data[], int length){
         // 边界条件
-        if(data == NULL || length <= 0)
-        {
+        if(data == NULL || length <= 0) {
             return false;
         }
         // 划分左右子树，并判断左右子树和根节点的关系
         int i = 0;
         int root = data[length - 1];
-        for(; i < length - 1; i++)
-        {
+        for(; i < length - 1; i++) {
             if(data[i] > root)
             {
                 break;
             }
         }
         int j = i;
-        for(; j < length - 1; j++)
-        {
+        for(; j < length - 1; j++) {
             if(data[j] < root)
             {
                 return false;
@@ -744,32 +766,7 @@ string
         return;    
     }
 
-//17 字符串的排列 (第二个swap是为了还原字符串顺序， pbegin+1)
-    void swap(char* c1,char* c2){
-        char tmp=*c1;
-        *c1=*c2;
-        *c2=tmp;
-    }
-     
-    void permutation(char* pstr,char* pbegin){
-        if(*pbegin=='\0')
-            printf("%s\n",pstr);
-        else{
-            for(char* pCh=pbegin;*pCh!='\0';pCh++){
-                swap(pbegin,pCh);
-                permutation(pstr,pbegin+1);
-                swap(pbegin,pCh);
-            }
-        }
-    }
-     
-    void permutationStr(char* pstr){
-        if(pstr==NULL)
-            return;
-        permutation(pstr,pstr);
-    }
-
-//18 复杂链表的复制
+//18 (1)复杂链表的复制
 
     struct ComplexListNode {
         int value;
@@ -820,7 +817,7 @@ string
 
         while(pNode != NULL)
         {
-            pClonedNode->next = pNode->next;
+            pClonedNode->next = pNode->next; //注意pClonedNode已经赋值，所以先指定next
             pClonedNode = pClonedNode->next;
             pNode->next = pClonedNode->next;
             pNode = pNode->next;
@@ -836,7 +833,7 @@ string
         return ReconnectNodes(pHead);
     }
 
-//19 二叉树与双向链表（中序遍历）
+//19 (1)二叉树与双向链表（中序遍历）
     struct BinaryTreeNode
     {
         int value;
@@ -874,7 +871,7 @@ string
             ConvertNodes(current->right, pLastNodeInList);
     }
 
-//20 第一个只出现一次的字符
+//20 (1)第一个只出现一次的字符
     char FirstOneChar(char* string)
     {
         if(string == NULL)
@@ -902,7 +899,7 @@ string
 
     }
 
-//21 2sum (暴力两次遍历，n2, 快排+双指针，nlogn, hashmap n, map.count(temp)查找元素的个数，unordered_map)
+//21 (1)2sum (暴力两次遍历，n2, 快排+双指针，nlogn, hashmap n, map.count(temp)查找元素的个数，unordered_map)
     //note: 找的是index
     class Solution {
     public:
@@ -925,7 +922,7 @@ string
         }
     };
 
-//22 3sum (注意每一个边界值及其增减)
+//22 (1)3sum (注意每一个边界值及其增减)
     //     第二种方法是先取数组中一个数，问题就转化为2 sum的问题求解，当数组中所有的数都被选定过后，问题也就解决了。例如“abcdf”，先取a，那么问题就是在bcdf中寻找两个数的和为target-a，然后取b,这个时候问题
     //  转化为cdf中寻找和为target-b的2 sum问题，a就不必再算入找寻找集合中，为什么？简单的证明即可：
     //      第一次取a，问题转化为bcdf重寻找和为target-a的2 sum问题，假设其中一个数是b,那么有：
@@ -935,41 +932,41 @@ string
     //
     //  利用hash还是排序搜索？单从方法上讲，前者肯定优于后者，但有一个问题，如果用hash，选取第一个数时，需要遍历一次数组，再存入hash，再检查hash，
     //  而C++提供的map不支持改变KEY，相对比较麻烦，排序搜索的方式，只需要排序、移动首尾指针，再检查。
-    class Solution {
-    public:
-        vector<vector<int>> threeSum(vector<int>& nums) {
-            vector<vector<int>> result;
-            int numsSize = nums.size();
-            sort(nums.begin(), nums.end());
-            int index_start, index_end;
-            for(int i = 0; i < numsSize - 2; i++) {
-                if(i > 0 && nums[i] == nums[i - 1])
-                    continue;
-                index_start = i + 1;
-                index_end = numsSize - 1;
-                int target = 0 - nums[i];
-                while(index_start < index_end) {
-                    if(nums[index_start] + nums[index_end] == target) {
-                        result.push_back({nums[i], nums[index_start], nums[index_end]});
-                        while(nums[index_start] == nums[index_start + 1] && index_start < index_end )
-                            index_start++;
-                        while(nums[index_end] == nums[index_end - 1] && index_start < index_end )
-                            index_end--; 
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> result;
+        int numsSize = nums.size();
+        sort(nums.begin(), nums.end());
+        int index_start, index_end;
+        for(int i = 0; i < numsSize - 2; i++) {
+            if(i > 0 && nums[i] == nums[i - 1])
+                continue;
+            index_start = i + 1;
+            index_end = numsSize - 1;
+            int target = 0 - nums[i];
+            while(index_start < index_end) {
+                if(nums[index_start] + nums[index_end] == target) {
+                    result.push_back({nums[i], nums[index_start], nums[index_end]});
+                    while(nums[index_start] == nums[index_start + 1] && index_start < index_end )
                         index_start++;
-                        index_end--;
-                    } else if(nums[index_start] + nums[index_end] < target) {
-                        index_start++;
-                    } else {
-                        index_end--;
-                    }
+                    while(nums[index_end] == nums[index_end - 1] && index_start < index_end )
+                        index_end--; 
+                    index_start++;
+                    index_end--;
+                } else if(nums[index_start] + nums[index_end] < target) {
+                    index_start++;
+                } else {
+                    index_end--;
                 }
             }
-            return result;
         }
-    };
+        return result;
+    }
+};
 
-//23 3sum smaller(满足和小于target的组合个数 http://www.cnblogs.com/grandyang/p/5235086.html)
-    // O(n^2)
+//23 (1)3sum smaller(满足和小于target的组合个数 http://www.cnblogs.com/grandyang/p/5235086.html)
+    // O(n^2) 
     class Solution {
     public:
         int threeSumSmaller(vector<int>& nums, int target) {
@@ -982,7 +979,7 @@ string
                 int left = i + 1, right = n - 1;
                 while (left < right) {
                     if (nums[i] + nums[left] + nums[right] < target) {
-                        res += right - left;
+                        res += right - left; //关键点
                         ++left;
                     } else {
                         --right;
@@ -993,7 +990,7 @@ string
         }
     };
 
-//24 3sum closest (http://www.cnblogs.com/grandyang/p/4510984.html)
+//24 (1)3sum closest (http://www.cnblogs.com/grandyang/p/4510984.html) leetcode 16. 最接近的三数之和
     class Solution {
     public:
         int threeSumClosest(vector<int>& nums, int target) {
@@ -1112,7 +1109,7 @@ string
         }
     };    
 
-//*//30 Binary Tree Maximum Path Sum(保证左子树和右子树大于或者等于零，比较加上root和以前不加root最大的max)
+//30 Binary Tree Maximum Path Sum(保证左子树和右子树大于或者等于零，比较加上root和以前不加root最大的max)
     class Solution {
     public:
         int res_max = INT_MIN;;
@@ -1133,7 +1130,7 @@ string
         }
     };
 
-//31 LRU (注意先更新map的node的value值，然后移动该node到List头，再用map指定该node)
+//31 (1)LRU (注意先更新map的node的value值，然后移动该node到List头，再用map指定该node)
     struct CacheNode{
         int key;
         int value;
@@ -1148,6 +1145,7 @@ string
     public:
         LRUCache(int capacity) {
             size = capacity;
+            cacheMap.clear();
         }
         
         int get(int key) {
@@ -1156,7 +1154,7 @@ string
             } else {
                 cacheList.splice(cacheList.begin(), cacheList, cacheMap[key]);//move的作用，move后cacheMap[key]为空需要指定
                 cacheMap[key] = cacheList.begin();
-                return cacheMap[key]->value;
+                return cacheMap[key]->value; //别写成了return cacheMap[key]
             }
         }
         
@@ -1175,8 +1173,44 @@ string
             }
         }
     };
+    LFU
+    // 缓存的节点信息
+    struct Node {
+        int key, val, freq;
+        Node(int _key,int _val,int _freq): key(_key), val(_val), freq(_freq){}
+    };
+    class LFUCache {
+        int minfreq, capacity;
+        unordered_map<int, list<Node>::iterator> key_table;
+        unordered_map<int, list<Node>> freq_table;
+    public:
+        LFUCache(int _capacity) {
+            minfreq = 0;
+            capacity = _capacity;
+            key_table.clear();
+            freq_table.clear();
+        }
+        
+        int get(int key) {
+            if (capacity == 0) return -1;
+            auto it = key_table.find(key);
+            if (it == key_table.end()) return -1;
+            list<Node>::iterator node = it -> second;
+            int val = node -> val, freq = node -> freq;
+            freq_table[freq].erase(node);
+            // 如果当前链表为空，我们需要在哈希表中删除，且更新minFreq
+            if (freq_table[freq].size() == 0) {
+                freq_table.erase(freq);
+                if (minfreq == freq) minfreq += 1;
+            }
+            // 插入到 freq + 1 中
+            freq_table[freq + 1].push_front(Node(key, val, freq + 1));
+            key_table[key] = freq_table[freq + 1].begin();
+            return val;
+        }
 
-//32 Palindrome Number()
+//[回文]
+//32 (1)Palindrome Number()
     public class Solution {
         bool isPalindrome(int x) {
             if(x<0) return false;
@@ -1188,7 +1222,7 @@ string
                 temp = temp/10;
             }
             while(x>0){
-                if(x/large!=x%10) return false;
+                if(x/large != x%10) return false;
                 else{
                     x = x % large;
                     x = x / 10;
@@ -1198,68 +1232,7 @@ string
             return true;
         }
     }
-
-//33 Palindrome Permutation 回文全排列(auto map i->second)
-    //Given a string, determine if a permutation of the string could form a palindrome.
-    //For example,
-    //"code" -> False, "aab" -> True, "carerac" -> True.
-    class solution{
-    public:
-        bool isPalindrome(string str) {
-            int count = 0;
-            unordered_map<char, int> map;
-            for(auto s : str) {
-                map[s]++;
-            }
-            for(auto i = map.begin(); i != map.end(); i++) {
-                if(i->second % 2) {
-                    count++;
-                }
-            }
-            return count == 0 || (str.size() % 2 == 1 && count == 1);
-        }
-    }
-
-//34 Palindrome Permutation II 回文全排列之二
-    //Given a string s, return all the palindromic permutations (without duplicates) of it. Return an empty list if no palindromic permutation could be form.
-    //For example:
-    //Given s = "aabb", return ["abba", "baab"].
-    //Given s = "abc", return [].
-    class Solution{
-    public:
-        vector<string> findAllPalindrome(string str) {
-            unordered_map<char, int> map;
-            unodered_set<string> res;
-            string t = "", mid = "";
-            for(auto s : str) {
-                map[s]++;
-            }
-            for(auto i = map.begin(); i != map.end(); i++) {
-                if(i->second % 2 == 1) {
-                    mid += i->first;
-                }
-                t += string(i->second / 2, i->first);
-            }
-            if(mid.size() > 1) return {};
-            permute(t, 0, mid, res);
-            return vector<string>(res.begin(), res.end()); 
-        }
-        void permute(string &t, int start, string mid, unodered_set<string> &res) {
-            if(start >= t.size()) {
-                res.insert(t + mid + string(t.rbegin(), t.rend()));
-            }
-            for(int i = start; i < t.size(); i++) {
-                if(i != start && t[i] == t[start]) {
-                    continue;
-                }
-                swap(t[i], t[start]);
-                permute(t, start + 1, mid, res);
-                swap(t[i], t[start]);
-            }
-        }
-    };
-
-//35 Palindrome Linked List(if(fast) { slow = slow->next;}为了适应长度为奇数的列表)
+//33 (1)Palindrome Linked List(if(fast) { slow = slow->next;}为了适应长度为奇数的列表)
     /**
      * Definition for singly-linked list.
      * struct ListNode {
@@ -1308,7 +1281,7 @@ string
         }
     };
 
-//36 Longest Palindrome(奇数个字符只能有一个是奇数)unordered_map
+//36 （1）Longest Palindrome(奇数个字符只能有一个是奇数)unordered_map
     class Solution {
     public:
         int longestPalindrome(string s) {
@@ -1329,7 +1302,181 @@ string
         }
     };
 
-//37 Ugly Number（只能被2，3，5整除的数）num >= 2
+//[Palindrome]
+//17 (1)字符串的排列 (第二个swap是为了还原字符串顺序， pbegin+1) 回溯法
+    void swap(char* c1,char* c2){
+        char tmp=*c1;
+        *c1=*c2;
+        *c2=tmp;
+    }
+     
+    void permutation(char* pstr,char* pbegin){
+        if(*pbegin=='\0')
+            printf("%s\n",pstr);
+        else{
+            for(char* pCh=pbegin;*pCh!='\0';pCh++){
+                swap(pbegin,pCh);
+                permutation(pstr,pbegin+1);
+                swap(pbegin,pCh);
+            }
+        }
+    }
+     
+    void permutationStr(char* pstr){
+        if(pstr==NULL)
+            return;
+        permutation(pstr,pstr);
+    }
+//34 （1）和17都属于全排列(leetcode 46. Permutations) 回溯法
+    class Solution {
+    public:
+        vector<vector<int>> permute(vector<int>& nums) {
+            vector<vector<int>> res;
+            if(nums.size() == 0) {
+                return res;
+            } else {
+                permutation(nums, 0, res);
+            }
+            return res;
+        }
+        
+        void permutation(vector<int>& nums, int begin, vector<vector<int>>& res) {
+            if(nums.size() <= begin) {
+                res.push_back(nums);
+                return;
+            }
+            for(int i = begin; i < nums.size(); i++) {
+                swap(nums, begin, i);
+                permutation(nums, begin + 1, res);
+                swap(nums, begin, i);
+            }
+        }
+        void swap(vector<int>& nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    };
+
+// 62 （1）(leetcode 47. Permutations II,有重复元素全排列，vector<vector<int>> (res.begin(), res.end()) )
+    class Solution {
+    public:
+        vector<vector<int>> permuteUnique(vector<int>& nums) {
+            set<vector<int>> res;
+            permutation(nums, 0, res);
+            return vector<vector<int>> (res.begin(), res.end());
+        }
+        
+        void permutation(vector<int>& nums, int begin, set<vector<int>>& res) {
+            if(nums.size() <= begin) {
+                res.insert(nums);
+                return;
+            }
+            unordered_map<int,bool> used;
+            for(int i = begin; i < nums.size(); i++) {
+                if(i != begin && nums[i] == nums[begin] && used[nums[i]]) { //此部分剪枝
+                    continue;
+                }
+                used[nums[i]] = true;
+                swap(nums, begin, i);
+                permutation(nums, begin + 1, res);
+                swap(nums, begin, i);
+            }
+        }
+        void swap(vector<int>& nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    };        
+
+// 63 (1)(leetcode 31. Next Permutation, 数字内组合得到下一个比该数大的数)
+    //从后至前的找第一对逆序位置，交换逆序位置的元素，并且将前逆序位置后的数字进行顺序的重排
+    class Solution {
+    public:
+        void nextPermutation(vector<int>& nums) {
+            int j,len=nums.size(),i=len-1,tmp;
+            //找出第一个逆序位置
+            while(i>0 &&  nums[i]<=nums[i-1])i--;
+            if(i>0){
+                j=len-1;
+                //找出第一个比逆序位置大的数的位置
+                while(j>=i && nums[j]<=nums[i-1])j--;
+                tmp=nums[i-1];
+                nums[i-1]=nums[j];
+                nums[j]=tmp;
+            }
+            j=len-1;
+            //对调i-1之后的元素
+            while(i<j){
+                tmp=nums[i];
+                nums[i]=nums[j];
+                nums[j]=tmp;
+                i++;j--;
+            }
+        }
+    };
+//34 (1)Palindrome Permutation 回文全排列(auto map i->second)
+    //Given a string, determine if a permutation of the string could form a palindrome.
+    //For example,
+    //"code" -> False, "aab" -> True, "carerac" -> True.
+    class solution{
+    public:
+        bool isPalindrome(string str) {
+            int count = 0;
+            unordered_map<char, int> map;
+            for(auto s : str) {
+                map[s]++;
+            }
+            for(auto i = map.begin(); i != map.end(); i++) {
+                if(i->second % 2) {
+                    count++;
+                }
+            }
+            return count == 0 || (str.size() % 2 == 1 && count == 1);
+        }
+    }
+
+//35 （1）Palindrome Permutation II 回文全排列之二
+    //Given a string s, return all the palindromic permutations (without duplicates) of it. Return an empty list if no palindromic permutation could be form.
+    //For example:
+    //Given s = "aabb", return ["abba", "baab"].
+    //Given s = "abc", return [].
+    class Solution{
+    public:
+        vector<string> findAllPalindrome(string str) {
+            unordered_map<char, int> map;
+            unodered_set<string> res;
+            string t = "", mid = "";
+            for(auto s : str) {
+                map[s]++;
+            }
+            for(auto i = map.begin(); i != map.end(); i++) {
+                if(i->second % 2 == 1) {
+                    mid += i->first;
+                }
+                t += string(i->second / 2, i->first);
+            }
+            if(mid.size() > 1) return {};
+            permute(t, 0, mid, res);
+            return vector<string>(res.begin(), res.end()); 
+        }
+        void permute(string &t, int start, string mid, unodered_set<string> &res) {
+            if(start >= t.size()) {
+                res.insert(t + mid + string(t.rbegin(), t.rend()));
+            }
+            for(int i = start; i < t.size(); i++) {
+                if(i != start && t[i] == t[start]) {
+                    continue;
+                }
+                swap(t[i], t[start]);
+                permute(t, start + 1, mid, res);
+                swap(t[i], t[start]);
+            }
+        }
+    };
+
+//37 （1）Ugly Number（只能被2，3，5整除的数）num >= 2
     class Solution {
     public:
         bool isUgly(int num) {
@@ -1348,7 +1495,7 @@ string
         }
     };
 
-//38 Ugly Number II(找出第n个丑数)
+//38 （1）Ugly Number II(找出第n个丑数)
     class Solution {
     public:
         int Min(int i, int j, int k) {
@@ -1375,7 +1522,7 @@ string
         }
     };
 
-//39 Super Ugly Number
+//39 （1）Super Ugly Number
     class Solution {
     public:
         int nthSuperUglyNumber(int n, vector<int>& primes) {
@@ -1404,7 +1551,6 @@ string
                 uglyNums[next++] = min;
             }
             return uglyNums[n - 1];
-
         }
     };
 
@@ -1574,7 +1720,7 @@ string
         }
     };
 
-//45 Implement Stack using Queues pop动作除了back都先出后进
+//45 (1)Implement Stack using Queues pop动作除了back都先出后进
     class MyStack {
     private:
         queue<int> q;
@@ -1614,7 +1760,7 @@ string
         }
     };
 
-//46 Implement Queue using Stacks 两个堆栈，只有pop和top在s2 空的时候从s1移动到s2.
+//46 (1)Implement Queue using Stacks 两个堆栈，只有pop和top在s2 空的时候从s1移动到s2.
     class MyQueue {
     private:
         stack<int> s1, s2;
@@ -1970,7 +2116,7 @@ string
         }
     };
 
-//56 Binary Tree Level Order Traversal
+//(1)56 Binary Tree Level Order Traversal
     /**
      * Definition for a binary tree node.
      * struct TreeNode {
@@ -2125,90 +2271,6 @@ string
         }
     };
 
-// 61 和17都属于全排列(leetcode 46. Permutations)
-    class Solution {
-    public:
-        vector<vector<int>> permute(vector<int>& nums) {
-            vector<vector<int>> res;
-            if(nums.size() == 0) {
-                return res;
-            } else {
-                permutation(nums, 0, res);
-            }
-            return res;
-        }
-        
-        void permutation(vector<int>& nums, int begin, vector<vector<int>>& res) {
-            if(nums.size() <= begin) {
-                res.push_back(nums);
-                return;
-            }
-            for(int i = begin; i < nums.size(); i++) {
-                swap(nums, begin, i);
-                permutation(nums, begin + 1, res);
-                swap(nums, begin, i);
-            }
-        }
-        void swap(vector<int>& nums, int i, int j) {
-            int temp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = temp;
-        }
-    };
-
-// 62 (leetcode 47. Permutations II,有重复元素全排列，vector<vector<int>> (res.begin(), res.end()) )
-    class Solution {
-    public:
-        vector<vector<int>> permuteUnique(vector<int>& nums) {
-            set<vector<int>> res;
-            permutation(nums, 0, res);
-            return vector<vector<int>> (res.begin(), res.end());
-        }
-        
-        void permutation(vector<int>& nums, int begin, set<vector<int>>& res) {
-            if(nums.size() <= begin) {
-                res.insert(nums);
-                return;
-            }
-            for(int i = begin; i < nums.size(); i++) {
-                if(i != begin && nums[i] == nums[begin]) {
-                    continue;
-                }
-                swap(nums, begin, i);
-                permutation(nums, begin + 1, res);
-                swap(nums, begin, i);
-            }
-        }
-        void swap(vector<int>& nums, int i, int j) {
-            int temp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = temp;
-        }
-    };        
-
-// 63 (leetcode 31. Next Permutation, 数字内组合得到下一个比该数大的数)
-    //从后至前的找第一对逆序位置，交换逆序位置的元素，并且将前逆序位置后的数字进行顺序的重排
-    class Solution {
-    public:
-        void nextPermutation(vector<int>& nums) {
-            int j,len=nums.size(),i=len-1,tmp;
-            while(i>0 &&  nums[i]<=nums[i-1])i--;
-            if(i>0){
-                j=len-1;
-                while(j>=i && nums[j]<=nums[i-1])j--;
-                tmp=nums[i-1];
-                nums[i-1]=nums[j];
-                nums[j]=tmp;
-            }
-            j=len-1;
-            while(i<j){
-                tmp=nums[i];
-                nums[i]=nums[j];
-                nums[j]=tmp;
-                i++;j--;
-            }
-        }
-    };
 
 // 64 min函数的栈
     class Solution
@@ -2301,24 +2363,24 @@ string
     // 4 排序
     class Solution {
     public:
-        vector<int> GetLeastNumbers_Solution(vector<int> input, int k)
+        vector<int> GetLeastNumbers_Solution(vector<int> arr, int k)
         {
             vector<int> ret;
-            if (input.empty() || k > input.size())
+            if (arr.empty() || k > arr.size())
                 return ret;
             
             for (int i = 0; i < k; i++)
-                ret.push_back(input[i]);
+                ret.push_back(arr[i]);
             make_heap(ret.begin(), ret.end(), less<int>());
             
             
-            for (int i = k; i < input.size(); i++)
+            for (int i = k; i < arr.size(); i++)
             {
-                if (input[i] < ret[0])
+                if (arr[i] < ret[0])
                 {
                     pop_heap(ret.begin(), ret.end(), less<int>());//pop_heap()并没有删除元素，而是将堆顶元素和数组最后一个元素进行了替换
                     ret.pop_back();
-                    ret.push_back(input[i]);
+                    ret.push_back(arr[i]);
                     push_heap(ret.begin(), ret.end(), less<int>());
                 }
             }
@@ -2328,7 +2390,7 @@ string
 
 // 65 (leetcode 160. Intersection of Two Linked Lists, 链表长度相减， 剑指offer193页)
 
-// 66 (leetcode 3. Longest Substring Without Repeating Characters最长无重复字符的子串)
+// 66 (1)(leetcode 3. Longest Substring Without Repeating Characters最长无重复字符的子串)
     //如果在滑动窗口就从left一直向右删除字符，直到把相同的字符也删除
     //子串（substring）——在字符串中是连续的
     //子序列（subsequence）——在字符串中可以不连续，也可以连续
@@ -2349,7 +2411,7 @@ string
         }
     };
 
-// 67 (leetcode 226. Invert Binary Tree, 二叉树的镜像)
+// 67 (1)(leetcode 226. Invert Binary Tree, 二叉树的镜像)
     class Solution {
     public:
         TreeNode* invertTree(TreeNode* root) {
@@ -2400,7 +2462,7 @@ string
         }
     }
 
-// 70 (leetcode 141. Linked List Cycle, 是否有环)
+// 70 (1)(leetcode 141. Linked List Cycle, 是否有环)
     class Solution {
     public:
         bool hasCycle(ListNode *head) {
@@ -2421,7 +2483,7 @@ string
         }
     };
 
-// 71 (leetcode 142. Linked List Cycle II, 求环的入口，如果求环的长度，从追上的节点继续走一圈)
+// 71 (1)(leetcode 142. Linked List Cycle II, 求环的入口，如果求环的长度，从追上的节点继续走一圈)
     class Solution {
     public:
         ListNode *detectCycle(ListNode *head) {
@@ -2543,7 +2605,7 @@ string
         }
     };
 
-// 76 最长公共子序列（LCS）(https://blog.csdn.net/coolwriter/article/details/79916029)
+// （1）76 最长公共子序列（LCS）(https://blog.csdn.net/coolwriter/article/details/79916029)
     //当我们要求table[ i ][ j ]，我们要先判断A[ i ]和B[ j ]是否相同，
     //如果相同他就是table[ i - 1 ][ j - 1 ] + 1，相当于在两个字符串都去掉一个字符时的最长公共字串再加 1；
     //否则最长公共字串取table[ i ][ j - 1 ] 和table[ i - 1 ][ j ] 中大者。
@@ -2570,7 +2632,7 @@ string
         }
     };
     
-// 77 最长公共子串(dp)子串是要求更严格的一种子序列，要求在母串中连续地出现。
+// 77 (1)最长公共子串(dp)子串是要求更严格的一种子序列，要求在母串中连续地出现。
     class LongestSubstring {
     public:
         int findLongest(string A, int n, string B, int m) {
@@ -2595,7 +2657,7 @@ string
         }
     };
 
-// 78 对称字符串长度 (dp法/Manacher法) https://www.cnblogs.com/mini-coconut/p/9074315.html
+// (1)78 对称字符串长度 (dp法/中心扩展法/Manacher法) https://www.cnblogs.com/mini-coconut/p/9074315.html
 //对于字符串str，假设dp[i,j]=1表示str[i...j]是回文子串，那个必定存在dp[i+1,j-1]=1。
 //当str[i]=str[j]时，如果str[i+1...j-1]是回文串，则str[i...j]也是回文串；如果str[i+1...j-1]不是回文串，则str[i...j]不是回文串
     string longestPalindrome(string s)
@@ -2605,7 +2667,7 @@ string
         if (len == 1)return s;
         int longest = 1;
         int start=0;
-        vector<vector<int> > dp(len,vector<int>(len));
+        vector<vector<int>> dp(len,vector<int>(len));
         for (int i = 0; i < len; i++) {
             dp[i][i] = 1;
             if(i<len-1) {
@@ -2629,7 +2691,51 @@ string
         return s.substr(start,longest);
     }
 
-// 79  二叉树中任意两节点的最低共同父节点（看剑指offer252页）
+    //时间复杂度On, 空间复杂度O1
+    class Solution
+    {
+    public:
+        string longestPalindrome(string s)
+        {
+            //判断空字符串的情况
+            if (s == "") {
+                return "";
+            }
+            string result("");
+            int sSize = int(s.size());
+            //选择一个中心点，向两侧扩展
+            for (int i = 0; i < sSize; i++)
+            {
+                //奇数组情况
+                string tmpStr = expandHelper(s, i, i);
+                //偶数组情况
+                string tmpStr2 = expandHelper(s, i, i + 1);
+                if (int(tmpStr.size()) > int(result.size())) {
+                    result = tmpStr;
+                }
+                if (int(tmpStr2.size()) > int(result.size())) {
+                    result = tmpStr2;
+                }
+            }
+
+            return result;
+        }
+
+        string expandHelper(string &s, int left, int right)
+        {
+            int sSize = int(s.size());
+            while (left >= 0 && right < sSize && s[left] == s[right])
+            {
+                left--;
+                right++;
+            }
+            //小心s[left] != s[right]
+            return (s.substr(left + 1, right - left - 1));
+        }
+    };
+
+
+// 79  (1)二叉树中任意两节点的最低共同父节点（看剑指offer252页）
     * struct TreeNode {
     *     int val;
     *     TreeNode *left;
@@ -2643,8 +2749,8 @@ string
                 path.push_back(pRoot);  
                 return true;  
             }  
-            // if(pRoot == NULL)  
-            //     return false;  
+            if(pRoot == NULL)
+                return false;
             path.push_back(pRoot);  
             bool found = false;  
             found = GetNodePath(pRoot->left, pNode, path);  
@@ -2684,6 +2790,24 @@ string
             return GetLastCommonNode(path1, path2);   
         }
     };
+    //第二种解法
+    class Solution {
+    public:
+        TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+            if (root == p || root == q || root == NULL) return root;
+            TreeNode* left = lowestCommonAncestor(root -> left, p, q);
+            TreeNode* right = lowestCommonAncestor(root -> right, p, q);
+            if (left && right) return root;
+            return left ? left : right;
+        }
+    };
+
+    //第二种解题思路
+    //本题为了简化题目，已经说明了所有的结点都是唯一的，p、q 不同且均存在于给定的二叉树中。因此我们有以下三种情况：
+    //难点在于如何书写递归函数，不妨这样思考：
+    //假设我们从跟结点开始，采用 DFS 向下遍历，如果当前结点到达叶子结点下的空结点时，返回空；如果当前结点为 p 或 q 时，返回当前结点；
+    //这样，当我们令 left = self.lowestCommonAncestor(root.left, p, q) 时，如果在左子树中找到了 p 或 q，left 会等于 p 或 q，同理，right 也是一样；
+    //然后我们进行判断：如果 left 为 right 都不为空，则为情况 1；如果 left 和 right 中只有一个不为空，说明这两个结点在子树中，则根节点到达子树再进行寻找。
 
 // 80 (722. Remove Comments 消除注释，注意break，str清空)
     class Solution {
@@ -3013,29 +3137,38 @@ string
         }
     };
 
-// 90 (平衡二叉树， 剑指offer 210页)
-    bool IsBalanced_1(TreeNode* pRoot,int& depth){
-        if(pRoot==NULL){
-            depth=0;
-            return true;
+// 90 (1)(平衡二叉树， 剑指offer 210页) 优化->剪枝
+  /**
+   * Definition for a binary tree node.
+   * struct TreeNode {
+   *     int val;
+   *     TreeNode *left;
+   *     TreeNode *right;
+   *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+   * };
+   */
+  class Solution {
+  public:
+      bool isBalanceWithDepth(TreeNode* node, int& depth) {
+        if(node == NULL){
+          depth = 0;
+          return true;
         }
-        int left,right;
-        int diff;
-        if(IsBalanced_1(pRoot->left,left) && IsBalanced_1(pRoot->right,right)){
-            diff=left-right;
-            if(diff<=1 && diff>=-1){
-                depth=left>right?left+1:right+1;
-                return true;
-            }
+        int left_depth, right_depth, diff_depth;
+        if(isBalanceWithDepth(node->left, left_depth) && isBalanceWithDepth(node->right, right_depth)) {
+          diff_depth = left_depth - right_depth;
+          if(diff_depth >= -1 && diff_depth <= 1) {
+            depth = left_depth > right_depth?left_depth+1:right_depth+1;
+            return true;
+          }
         }
         return false;
-    }
-     
-    bool IsBalancedTree(TreeNode* pRoot){
-        int depth=0;
-        return IsBalanced_1(pRoot,depth);
-    }
-
+      }
+      bool isBalanced(TreeNode* root) {
+        int depth = 0;
+        return isBalanceWithDepth(root, depth);
+      }
+  };
 // 92 构建乘积数组 https://www.acwing.com/solution/AcWing/content/759/（vector初始化）
     class Solution {
     public:

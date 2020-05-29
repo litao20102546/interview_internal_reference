@@ -1,0 +1,4 @@
+* 静态Pod是直接由节点kubelet进程来管理的，不能通过apiserver的master节点控制。无法与我们常用的控制器daemonset 和 deployment 联合使用
+* 它由kubelet进程负责监控，当Pod崩溃时重启该Pod，kubelet也无法对静态Pod进行健康检查。静态Pod始终绑定在某一个kubelet节点上，并且始终运行在同一个节点。
+* kubelet会自动为每一个静态Pod在kubernetes的apiserver上创建一个镜像Pod（Mirror Pod），因此我们可以通过apiserver看到静态Pod，但是不能通过apiserver控制。
+* 创建静态Pod的方式有两种： 配置文件、HTTP

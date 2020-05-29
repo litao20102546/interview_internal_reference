@@ -1,0 +1,14 @@
+# collections
+## collections.ChainMap
+	* 是为可以把很多dict链接起来.
+	* ChainMap内部存储了一个名为maps的list用以维护mapping关系, 这个list可以直接查看和修改，修改之后相应ChainMap值也就修改了
+## collections.Counte
+	* most_common()出现次数最多的元素
+
+
+# 常用包
+from operator import itemgetter
+from itertools import groupby
+operator.attrgetter()代替lambda函数
+import heapq
+heapq模块有两个函数： nlargest() 和 nsmallest()获得最大或者最小的N个元素列
