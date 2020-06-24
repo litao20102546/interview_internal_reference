@@ -5,4 +5,5 @@
 * kubectl annotate pods pod1 "...."
 * kubectl cp /tmp/file pod1:/tmp/
 * kubectl top
-* 
+* kubectl rollout status deployments <name>
+* kubectl scale
