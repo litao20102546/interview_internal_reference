@@ -1,4 +1,6 @@
+https://www.bookstack.cn/read/source-code-reading-notes/kubernetes-kubelet-modules.md
 
+<img src=kubelet-arch.png />
 
 # kubelet 中事件处理机制
 
@@ -14,6 +16,17 @@
 * Broadcaster
   * Broadcaster 会启动一个 goroutine 接收各组件产生的 events 并广播到每一个 watcher
   * Broadcaster 中有一个 map 会保存每一个注册的 watcher
+
+
+
+kubelet 对 events 的整个处理过程再梳理下，其中主要有三个对象 EventBroadcaster、EventRecorder、Broadcaster：
+
+- 1、kubelet 首先会初始化 EventBroadcaster 对象，同时会初始化一个 Broadcaster 对象。
+- 2、kubelet 通过 EventBroadcaster 对象的 NewRecorder() 方法初始化 EventRecorder 对象，EventRecorder 对象提供的几个方法会生成 events 并通过 Action() 方法发送 events 到 Broadcaster 的 channel 队列中。
+- 3、Broadcaster 的作用就是接收所有的 events 并进行广播，Broadcaster 初始化后会在后台启动一个 goroutine，然后接收所有从 EventRecorder 发来的 events。
+- 4、EventBroadcaster 对 events 有三个处理方法：StartEventWatcher()、StartRecordingToSink()、StartLogging()，StartEventWatcher() 是其中的核心方法，会初始化一个 watcher 注册到 Broadcaster，其余两个处理函数对 StartEventWatcher() 进行了封装，并实现了自己的处理函数。
+- 5、 Broadcaster 中有一个 map 会保存每一个注册的 watcher，其会将所有的 events 广播给每一个 watcher，每个 watcher 通过它的 ResultChan() 方法从 channel 接收 events。
+- 6、kubelet 会使用 StartRecordingToSink() 和 StartLogging() 对 events 进行处理，StartRecordingToSink() 处理函数收到 events 后会进行缓存、过滤、聚合而后发送到 apiserver，apiserver 会将 events 保存到 etcd 中，使用 kubectl 或其他客户端可以查看。StartLogging() 仅将 events 保存到 kubelet 的日志中。
 
 # kubelet 上报状态
 
@@ -81,7 +94,7 @@ managePodLoop 调用 syncPodFn 方法去同步 pod，syncPodFn 实际上就是ku
 - 将这个 pod 信息插入 kubelet 的 workQueue 队列中，等待下一次周期性的对这个 pod 的状态进行 sync
 - 将在这次 sync 期间堆积的没有能够来得及处理的最近一次 update 操作加入 goroutine 的事件 channel 中，立即处理。
 
-### 7. 完成创建容器前的准备工作（SyncPod）
+### 7. 完成创建容器前的准备工作（SyncPodFn）
 
 在这个方法中，主要完成以下几件事情：
 
@@ -94,16 +107,17 @@ managePodLoop 调用 syncPodFn 方法去同步 pod，syncPodFn 实际上就是ku
 - 然后调用 kubelet.volumeManager 组件，等待它将 pod 所需要的所有外挂的 volume 都准备好。
 - 调用 container runtime 的 SyncPod 方法，去实现真正的容器创建逻辑
 
-### 8、创建容器
+### 8、创建容器(SyncPod)
 
 containerRuntime（pkg/kubelet/kuberuntime）子模块的 SyncPod 函数才是真正完成 pod 内容器实体的创建。 syncPod 主要执行以下几个操作：
 
 - 1、计算 sandbox 和 container 是否发生变化
 - 2、创建 sandbox 容器
-- 3、启动 init 容器
-- 4、启动业务容器
+- 3、获取 PodSandbox 的配置(如:metadata,clusterDNS,容器的端口映射等)
+- 4、启动 init 容器
+- 5、启动业务容器
 
-### 9、启动容器
+### 9、启动容器(startContainer)
 
 最终由 startContainer 完成容器的启动，其主要有以下几个步骤：
 

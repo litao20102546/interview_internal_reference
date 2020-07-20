@@ -56,7 +56,7 @@ ipvs 和 iptables 都是基于 [netfilter内核模块](https://www.netfilter.org
 
 
 
-此外，由于 linux 内核原生的 ipvs 模式只支持 DNAT，不支持 SNAT，所以，在以下几种场景中 ipvs 仍需要依赖 iptables 规则：
+此外，**由于 linux 内核原生的 ipvs 模式只支持 DNAT，不支持 SNAT，所以，在以下几种场景中 ipvs 仍需要依赖 iptables 规则：**
 
 - 1、kube-proxy 启动时指定 `–-masquerade-all=true` 参数，即集群中所有经过 kube-proxy 的包都做一次 SNAT；
 - 2、kube-proxy 启动时指定 `--cluster-cidr=` 参数；
@@ -75,6 +75,9 @@ ipvs 和 iptables 都是基于 [netfilter内核模块](https://www.netfilter.org
 - 为每个 ClusterIP 创建 IPVS virtual servers 和 real server，分别对应 service 和 endpoints；
 
 # BPF
+
+* 最近业界使用范围最广的Kubernetes CNI网络方案[Calico宣布支持eBPF](https://www.projectcalico.org/introducing-the-calico-ebpf-dataplane/)，
+* 而作为第一个通过eBPF实现了kube-proxy所有功能的Kubernetes网络方案——Cilium
 
 BPF（Berkeley Packet Filter）是 [Linux](http://www.codercto.com/category/linux.html) 内核中的一个虚拟机
 

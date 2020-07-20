@@ -1,13 +1,55 @@
-#### **题目**：主从复制
-1. 复制的基本原理
-	- master-> binary log(二进制事件)
-	- slave copy binary log from master to relay log
-	- slave redo binary log
-2. 基本原则
-    - slave(多个) - master(一个）
-    - slave only have one server ID
-3. 配置
-	- server id
-	- bin log
-	- master 授权 -> show master status -> slave 配置master, start slaver-> show slaver status
-	
+# 为什么要做主从复制
+
+1. 在业务复杂的系统中，有这么一个情景，有一句sql语句需要锁表，导致暂时不能使用读的服务，那么就很影响运行中的业务，使用主从复制，让主库负责写，从库负责读，这样，即使主库出现了锁表的情景，通过读从库也可以保证业务的正常运行。
+2. 做数据的热备，主库宕机后能够及时替换主库，保证业务可用性。
+3. 架构的扩展。业务量越来越大，I/O访问频率过高，单机无法满足，此时做多库的存储，降低磁盘I/O访问的频率，提高单个机器的I/O性能。
+
+# 主从复制原理
+
+主从复制中涉及的文件
+
+主库: binlog
+
+从库:
+
+- relaylog 中继日志
+- master.info 主库信息文件
+- relaylog.info relaylog应用的信息
+
+主从复制中涉及的三个线程
+
+主库:
+
+Binlog_Dump Thread :
+
+从库:
+
+SLAVE_IO_THREAD
+
+SLAVE_SQL_THREAD
+
+<img src=主从复制.png />
+
+1.从数据库执行change master to 命令(主数据库的连接信息+复制的起点)
+2.从数据库会将以上信息,记录到master.info文件
+3.从数据库执行 start slave 命令,立即开启SLAVE_IO_THREAD 和SLAVE_SQL_THREAD这两个线程
+
+4.从数据库 SLAVE_SQL_THREAD,读取master.info文件中的信息获取到IP,PORT,User,Pass,binlog的位置信息
+
+5.从数据库SLAVE_IO_THREAD请求连接主数据库,主数据库专门提供一个SLAVE_IO_THREAD,负责和SLAVE_SQL_THREAD交互
+
+6.SLAVE_IO_THREAD根据binlog的位置信息,请求主数据库新的binlog
+
+7.主数据库通过Binlog_DUMP_Thread将最新的binlog,通过网络TP给从数据库的SALVE_IO_THREAD
+
+8.SLAVE_IO_THREAD接收到新的binlog日志,存储到TCP/IP缓存,立即返回ACK给主库,并更新master.info
+
+9.SLAVE_IO_THREAD将TCP/IP缓存中数据,转储到磁盘relaylog中.
+
+10.SLAVE_SQL_THREAD读取relay.info中的信息,获取到上次已经应用过的relaylog的位置信息
+
+11.SLAVE_SQL_THREAD会按照上次的位置点回放最新的relaylog,再次更新relay.info信息
+
+12.从数据库会自动purge应用过relay进行定期清理
+
+一旦主从复制构建成功,主数据库当中发生了新的变化,都会通过 slave_dump_THREAD发送信号给SLAVE_IO_THREAD,增强了主从复制的实时性.

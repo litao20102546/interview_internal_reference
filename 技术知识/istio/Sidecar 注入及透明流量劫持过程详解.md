@@ -1,3 +1,5 @@
+
+
 ## Sidecar 模式
 
 将应用程序的功能划分为单独的进程运行在同一个最小调度单元中（例如 Kubernetes 中的 Pod）可以被视为 **sidecar 模式**。如下图所示，sidecar 模式允许您在应用程序旁边添加更多功能，而无需额外第三方组件配置或修改应用程序代码。
@@ -281,6 +283,26 @@ $ istio-iptables [flags]
 - 将所有出站流量都重定向到 sidecar 代理（通过 15001 端口）。
 
 因为 Init 容器初始化完毕后就会自动终止，因为我们无法登陆到容器中查看 iptables 信息，但是 Init 容器初始化结果会保留到应用容器和 sidecar 容器中。
+
+# iptables流量拦截流程
+
+1. 要进入pod的Inbound流量首先被PREROUTING链拦截
+2. PREROUTING链处理规则拦截TCP数据包转发给ISTIO_INBOUND链处理
+3. ISTIO_INBOUND链处理规则，将目的端口匹配应用端口的TCP数据包转给ISTIO_INBOUND_REDIRECT链处理
+4. ISTIO_INBOUND_REDIRECT链处理规则将TCP数据包转给15001端口交给Envoy程序处理
+5. Envoy程序根据目的地址查看Inbound方向监听器配置，根据配置即路由等配置决定是否将数据包转发给应用
+6. OUTPUT链规则将TCP数据包交给ISTIO_OUTPUT链表处理
+7. ISTIO_OUTPUT链表匹配规则给到相应的应用程序
+8. 应用程序处理完，发送相应数据包，被OUTPUT拦截
+9. OUTPUT拦截后交给ISTIO_OUTPUT链
+10. ISTIO_OUTPUT链将数据包转发给ISTIO_REDIRECT链处理
+11. ISTIO_REDIRECT链将数据包重定向到15001端口交给Envoy程序
+12. Envoy程序根据目的地址查看Outbound方向监听器配置，根据配置即路由等配置决定是否将数据包向外转发
+13. Envoy程序向外转发的数据包同样有OUTPUT链拦截，然后OUTPUT链规则将TCP数据包交给ISTIO_OUTPUT链表处理
+14. STIO_OUTPUT链表将数据包转发给POSTROUTING链
+15. POSTROUTING链处理完后根据路由表选择合适的网卡发出去
+
+
 
 ## iptables 注入解析
 

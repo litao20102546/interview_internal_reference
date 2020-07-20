@@ -1,17 +1,18 @@
 https://blog.csdn.net/qq_29373285/article/details/88610654
 B树 二叉搜索树
 B-树， 是一种多路搜索树，每个节点存放关键字
-B+树的分裂：当一个结点满时，分配一个新的结点，并将原结点中1/2的数据
-复制到新结点, 最后在父结点中增加新结点的指针
+B+树的分裂：当一个结点满时，分配一个新的结点，并将原结点中1/2的数据复制到新结点, 最后在父结点中增加新结点的指针
 B* 是B+树的变体，在B+树的非根和非叶子结点再增加指向兄弟的指针
-B*树的分裂：当一个结点满时，如果它的下一个兄弟结点未满，那么将一部分
-数据移到兄弟结点中，再在原结点插入关键字，最后修改父结点中兄弟结点的关键字
+B*树的分裂：当一个结点满时，如果它的下一个兄弟结点未满，那么将一部分数据移到兄弟结点中，再在原结点插入关键字，最后修改父结点中兄弟结点的关键字
 红黑树
 1. 根节点是黑色的。
 2. 空节点是黑色的（红黑树中，根节点的parent以及所有叶节点lchild、rchild都不指向NULL，而是指向一个定义好的空节点）。
 3. 红色节点的父、左子、右子节点都是黑色。
 4. 在任何一棵子树中，每一条从根节点向下走到空节点的路径上包含的黑色节点数量都相同。
-
+如果在内存中红黑树效率更高，如果涉及到磁盘读写B数效率更高
+B数和B+树的区别
+如果是多条的话，B 树需要做局部的中序遍历，可能要跨层访问。
+ B+ 树由于所有数据都在叶子结点，不用跨层，同时由于有链表结构，只需要找到首尾，通过链表就能把所有数据取出来了。
 vector (向量)
     vector<int> vec;
     empty(), push_back(), pop_back(),begin(), end(), front(), back(), size(), insert() vec[i]
@@ -832,6 +833,44 @@ string
     }
 
 //19 (1)二叉树与双向链表（中序遍历）
+
+class Solution {
+public:
+    Node* pre = NULL, *cur = NULL, *head = NULL;
+
+    Node* treeToDoublyList(Node* root) {
+        if(root == NULL)
+            return NULL;
+            
+        // 创建一个 resHead 可以省略头节点相关的边界判断， resHead 指向头节点即可
+        Node* resHead = new Node;
+        resHead -> right = root;  // resHead right 指向 head( 这里使用 left 也可以)
+        pre = resHead;            // 对于 head 节点， head 的前一个节点就是 resHead 了。
+
+        _treeToDoublyList(root);   // 进行中序遍历（因为中序遍历前后都要做一些处理， 所以这里把中序遍历单独有写了一个函数）
+
+        // 更新头节点和尾节点的指针， 没有这部分那么此链表就只是一个普通的双向链表， 此处把双向链表变成了双向循环链表。
+        resHead -> right -> left = cur;
+        cur -> right = resHead -> right;
+
+        return resHead -> right;
+    }
+
+    void _treeToDoublyList(Node* root) {
+        if(root == NULL)
+            return;
+        
+        _treeToDoublyList(root -> left);
+
+        cur = root;         // 变更开始时更新 cur
+        pre -> right = cur; // 变更左右指针的指向， 符合双向链表的指针指向， 即当节点有一个指针指向前一个节点， 前一个节点也有一个指针指向当前节点
+        cur -> left = pre;
+        pre = root;         // 变结束后更新 pre ， 以便下一次使用
+
+        _treeToDoublyList(root -> right);
+    }
+};
+
     struct Node
     {
         int value;
@@ -3344,6 +3383,18 @@ public:
             return sell;
         }
     };
+    int maxProfit_with_cool(int[] prices) {
+        int n = prices.length;
+        int sellProfit = 0, buyProfit = INT_MIN;
+        int preSellProfit = 0; // 代表 dp[i-2][0]
+        for (int i = 0; i < n; i++) {
+            int temp = sellProfit;
+            sellProfit = Math.max(sellProfit, buyProfit + prices[i]);
+            buyProfit = Math.max(buyProfit, preSellProfit - prices[i]);
+            preSellProfit = temp;
+        }
+        return sellProfit;
+    }
 
 // 89（LeetCode 4. Median of Two Sorted Arrays https://blog.csdn.net/u014591781/article/details/52893664）
     //https://leetcode.com/problems/median-of-two-sorted-arrays/discuss/2471/very-concise-ologminmn-iterative-solution-with-detailed-explanation

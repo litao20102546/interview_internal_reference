@@ -46,3 +46,5 @@ CPU 最终都会转换为以微秒为单位，memory 会转换为以 bytes 为�
 <img src=Qos-level.png />
 
 当创建资源如下所示的 pod, 首先会根据 pod 的 Qos 该 pod 为 burstable 在其所属 Qos 下创建 `ROOT/kubepods/burstable/pod<UID>/container<UID>` 两个 cgroup level，然后会更新 pod 的父 cgroup 也就是 `burstable/` cgroup 中的值，最后会更新 `kubepods` cgroup 中的值，
+
+* burstable 的 cgroup 需要为比他等级高的 guaranteed 级别的 pod 的内存资源做预留，而 besteffort 需要为 burstable 和 guaranteed 都要预留内存资源。
