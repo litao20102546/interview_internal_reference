@@ -96,6 +96,25 @@
 
 3. 预选策略
     说明：返回true表示该节点满足该Pod的调度条件；返回false表示该节点不满足该Pod的调度条件。
+    
+    默认的 predicates 调度算法主要分为五种类型：
+    
+    1、第一种类型叫作 GeneralPredicates，包含 PodFitsResources、PodFitsHost、PodFitsHostPorts、PodMatchNodeSelector 四种策略，其具体含义如下所示：
+    
+    - PodFitsHost：检查宿主机的名字是否跟 Pod 的 spec.nodeName 一致
+    - PodFitsHostPorts：检查 Pod 申请的宿主机端口（spec.nodePort）是不是跟已经被使用的端口有冲突
+    - PodMatchNodeSelector：检查 Pod 的 nodeSelector 或者 nodeAffinity 指定的节点是否与节点匹配等
+    - PodFitsResources：检查主机的资源是否满足 Pod 的需求，根据实际已经分配（Request）的资源量做调度
+    
+    kubelet 在启动 Pod 前，会执行一个 Admit 操作来进行二次确认，这里二次确认的规则就是执行一遍 GeneralPredicates。
+    
+    2、第二种类型是与 Volume 相关的过滤规则，主要有NoDiskConflictPred、MaxGCEPDVolumeCountPred、MaxAzureDiskVolumeCountPred、MaxCSIVolumeCountPred、MaxEBSVolumeCountPred、NoVolumeZoneConflictPred、CheckVolumeBindingPred。
+    
+    3、第三种类型是宿主机相关的过滤规则，主要是 PodToleratesNodeTaintsPred。
+    
+    4、第四种类型是 Pod 相关的过滤规则，主要是 MatchInterPodAffinityPred。
+    
+    5、第五种类型是新增的过滤规则，与宿主机的运行状况有关，主要有 CheckNodeCondition、 CheckNodeMemoryPressure、CheckNodePIDPressure、CheckNodeDiskPressure 四种。
 
  3.1. NoDiskConflict
   判断备选Pod的数据卷是否与该Node上已存在Pod挂载的数据卷冲突，如果是则返回false，否则返回true。
@@ -187,3 +206,6 @@
 * 节点容忍度tolerations
 
   * spec.tolerations:
+
+## 局部优选
+
